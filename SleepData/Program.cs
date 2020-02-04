@@ -15,7 +15,8 @@ namespace SleepData
             string resp = Console.ReadLine();
 
             // specify path for data file
-            string file = "/users/jgrissom/downloads/data.txt";
+            //string file = "/users/jgrissom/downloads/data.txt";
+            string file = AppDomain.CurrentDomain.BaseDirectory + "data.txt";
 
             if (resp == "1")
             {
@@ -60,6 +61,47 @@ namespace SleepData
             {
                 // TODO: parse data file
 
+                if (File.Exists(file))
+                {
+                    StreamReader dataFile = new StreamReader(file);
+
+                    while (!dataFile.EndOfStream)
+                    {
+                        // reads a line of the file
+                        string line = dataFile.ReadLine();
+                        // takes first line and split into array elements using specified delimeter
+                        string[] data = line.Split(',');
+
+                        string date = data[0];
+                        string[] hoursString = data[1].Split('|');
+
+                        DateTime dT = Convert.ToDateTime(date);
+
+                        Console.WriteLine("Week of " + dT.ToString("MMM") + ", " + dT.ToString("dd") + ", " + dT.ToString("yyyy"));
+
+                        int[] hoursInt = new int[hoursString.Length];
+
+                        double totalHours = 0;
+                        double avgHours = 0;
+
+                        Console.WriteLine(" Su Mo Tu We Th Fr Sa Tot Avg");
+                        Console.WriteLine(" -- -- -- -- -- -- -- --- ---");
+
+                        for (int x = 0; x < hoursString.Length; x++)
+                        {
+                            hoursInt[x] = int.Parse(hoursString[x]);
+                            totalHours = totalHours + hoursInt[x];
+                            Console.Write(" {0,2}", hoursInt[x]);
+                        }
+
+                        Console.Write("{0,3} ", totalHours);
+
+                        avgHours = totalHours / hoursInt.Length;
+
+                        Console.WriteLine("{0,3:n1}", avgHours);
+
+                    }
+                }
             }
         }
     }
